@@ -129,7 +129,7 @@
   <script>
     const supabaseUrl = 'https://ztothibhywgksdkfyhbl.supabase.co';
     const supabaseKey = 'sb_publishable_FDxVu-o9YhO1ShGpkJviqg_O4VGS60_';
-    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
     const requestForm = document.getElementById('requestForm');
     const requestList = document.getElementById('requestList');
     const authorInput = document.getElementById('authorInput');
@@ -151,7 +151,7 @@
       return String(value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
     }
     async function loadRequests() {
-      const { data, error } = await supabase.from('requests').select(`id,author,content,created_at,comments(id,author,content,created_at)`).order('created_at',{ascending:false});
+      const { data, error } = await supabaseClient.from('requests').select(`id,author,content,created_at,comments(id,author,content,created_at)`).order('created_at',{ascending:false});
       if (error) {
         console.error(error); setStatus('连接失败', false); return;
       }
@@ -197,19 +197,19 @@
       }).join('');
     }
     async function createRequest(author, content) {
-      const { error } = await supabase.from('requests').insert([{ author, content }]);
+      const { error } = await supabaseClient.from('requests').insert([{ author, content }]);
       if (error) throw error;
     }
     async function updateRequest(id, content) {
-      const { error } = await supabase.from('requests').update({ content, updated_at: new Date().toISOString() }).eq('id', id);
+      const { error } = await supabaseClient.from('requests').update({ content, updated_at: new Date().toISOString() }).eq('id', id);
       if (error) throw error;
     }
     async function deleteRequest(id) {
-      const { error } = await supabase.from('requests').delete().eq('id', id);
+      const { error } = await supabaseClient.from('requests').delete().eq('id', id);
       if (error) throw error;
     }
     async function addComment(requestId, author, content) {
-      const { error } = await supabase.from('comments').insert([{ request_id: requestId, author, content }]);
+      const { error } = await supabaseClient.from('comments').insert([{ request_id: requestId, author, content }]);
       if (error) throw error;
     }
     requestForm.addEventListener('submit', async function (e) {
@@ -254,7 +254,7 @@
       try { await addComment(requestId, author, content); form.reset(); } catch (error) { console.error(error); alert('留言失败'); }
     });
     function setupRealtime() {
-      const channel = supabase.channel('requests-realtime')
+      const channel = supabaseClient.channel('requests-realtime')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'requests' }, () => loadRequests())
         .on('postgres_changes', { event: '*', schema: 'public', table: 'comments' }, () => loadRequests())
         .subscribe((status) => {
