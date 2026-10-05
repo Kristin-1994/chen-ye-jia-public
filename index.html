@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>陈叶家</title>
+  <style>
+    :root {
+      --bg: #f7f1ea;
+      --card: #ffffff;
+      --line: #eadcc4;
+      --primary: #5a6d4d;
+      --primary-dark: #3d4e32;
+      --accent: #e4c68a;
+      --text: #2d2d2d;
+      --muted: #707070;
+      --soft: #f3efe8;
+      --danger: #c46552;
+      --shadow: 0 12px 28px rgba(90,70,45,0.08);
+    }
+    * { box-sizing: border-box; }
+    html,body {
+      margin:0; min-height:100%;
+      background:linear-gradient(180deg,#f9f4ee 0%,#f1e8df 100%);
+      color:var(--text); font-family:"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+    }
+    body { padding:18px 14px 28px; }
+    .app { max-width:720px; margin:0 auto; }
+    .header {
+      display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:16px;
+    }
+    .header h1 { margin:6px 0 0; font-size:clamp(1.9rem,6vw,2.8rem); color:var(--primary-dark); line-height:1.1; }
+    .badge {
+      display:inline-flex; align-items:center; justify-content:center; background:#f7e8c8; color:#6e5323;
+      border:1px solid #e4c17e; border-radius:999px; padding:8px 12px; font-size:12px; font-weight:700; white-space:nowrap;
+    }
+    .card {
+      background: rgba(255,255,255,0.94); border:1px solid var(--line); border-radius:20px; box-shadow:var(--shadow); padding:16px; margin-bottom:16px;
+    }
+    .card h2 { margin:0 0 14px; font-size:1.05rem; color:var(--primary-dark); }
+    .field { display:flex; flex-direction:column; gap:8px; margin-bottom:14px; }
+    .field label { font-size:0.82rem; font-weight:700; }
+    input, textarea, button { font: inherit; }
+    input, textarea {
+      width:100%; border:1px solid var(--line); border-radius:12px; background:#fffaf4; color:var(--text);
+      padding:12px 14px; outline:none; appearance:none; -webkit-appearance:none;
+    }
+    input:focus, textarea:focus { border-color: rgba(90,109,77,0.75); box-shadow:0 0 0 3px rgba(90,109,77,0.08); }
+    textarea { min-height:110px; resize:vertical; }
+    .primary-btn {
+      width:100%; border:none; border-radius:12px; background:linear-gradient(135deg,var(--primary),var(--primary-dark)); color:#fff;
+      padding:14px 16px; font-weight:800; letter-spacing:0.03em; cursor:pointer; box-shadow:0 10px 18px rgba(90,109,77,0.18);
+    }
+    .list-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+    .list-head h2 { margin:0; font-size:1.05rem; }
+    .count {
+      min-width:60px; text-align:center; padding:7px 10px; border-radius:999px; font-size:12px; font-weight:700;
+      background:#f9e7c8; color:#775d28; border:1px solid #e8c67e;
+    }
+    .request-list { display:grid; gap:14px; }
+    .request-item {
+      background:var(--card); border:1px solid var(--line); border-radius:18px; padding:14px 12px 12px; box-shadow:var(--shadow);
+    }
+    .request-header { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:10px; }
+    .author { font-weight:800; color:var(--primary-dark); font-size:0.96rem; }
+    .time { color:var(--muted); font-size:0.7rem; white-space:nowrap; }
+    .request-actions { display:flex; justify-content:flex-end; gap:8px; margin-bottom:10px; }
+    .mini-btn {
+      border:none; border-radius:10px; background:#f4e7d0; color:#5b451f; font-weight:700; padding:8px 10px; min-width:52px; cursor:pointer;
+    }
+    .mini-btn.delete { background:#f9e1dc; color:var(--danger); }
+    .content { margin:0 0 12px; white-space:pre-wrap; line-height:1.7; font-size:0.96rem; }
+    .comment-box { border-top:1px solid var(--line); padding-top:12px; }
+    .comment-list { display:grid; gap:9px; margin-bottom:10px; }
+    .comment-item { background:var(--soft); border-radius:12px; padding:9px 10px; }
+    .comment-top { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:4px; }
+    .comment-user { font-size:0.72rem; font-weight:800; color:var(--primary); }
+    .comment-time { font-size:0.66rem; color:var(--muted); }
+    .comment-text { margin:0; color:var(--text); line-height:1.6; font-size:0.86rem; }
+    .comment-form { display:grid; grid-template-columns:1fr 1.6fr auto; gap:8px; align-items:center; }
+    .comment-btn {
+      border:none; border-radius:10px; background:var(--accent); color:#382b1a; font-weight:800; padding:11px 10px; cursor:pointer;
+    }
+    .empty {
+      background:rgba(255,255,255,0.7); border:1px dashed var(--line); color:var(--muted); border-radius:16px; text-align:center; padding:26px 14px; font-size:0.9rem;
+    }
+    @media (max-width:420px) {
+      .comment-form { grid-template-columns:1fr; }
+      .comment-btn { width:100%; }
+      .header { align-items:flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div>
+        <p class="eyebrow">家庭协作清单</p>
+        <h1>陈叶家</h1>
+      </div>
+      <div id="status" class="badge">已同步</div>
+    </header>
+
+    <section class="card">
+      <h2>发布一个需求</h2>
+      <form id="requestForm">
+        <div class="field">
+          <label for="authorInput">你的昵称</label>
+          <input id="authorInput" type="text" maxlength="20" placeholder="例如：妈妈、叶子、爸爸" required />
+        </div>
+        <div class="field">
+          <label for="contentInput">需求内容</label>
+          <textarea id="contentInput" maxlength="400" placeholder="写下你想要的事、提醒、建议或想法…" required></textarea>
+        </div>
+        <button class="primary-btn" type="submit">发布需求</button>
+      </form>
+    </section>
+
+    <section>
+      <div class="list-head">
+        <h2>需求列表</h2>
+        <span id="countBadge" class="count">0条</span>
+      </div>
+      <div id="requestList" class="request-list"></div>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const supabaseUrl = 'https://ztothibhywgksdkfyhbl.supabase.co';
+    const supabaseKey = 'sb_publishable_FDxVu-o9YhO1ShGpkJviqg_O4VGS60_';
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    const requestForm = document.getElementById('requestForm');
+    const requestList = document.getElementById('requestList');
+    const authorInput = document.getElementById('authorInput');
+    const contentInput = document.getElementById('contentInput');
+    const countBadge = document.getElementById('countBadge');
+    const statusEl = document.getElementById('status');
+
+    function setStatus(text, ok) {
+      statusEl.textContent = text;
+      statusEl.style.background = ok ? '#dfedd9' : '#f9e2df';
+      statusEl.style.color = ok ? '#3d4e32' : '#c46552';
+      statusEl.style.borderColor = ok ? '#bfd3ae' : '#ebbaac';
+    }
+    function formatTime(ts) {
+      const d = new Date(ts);
+      return d.toLocaleString('zh-CN', { year:'numeric', month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit' });
+    }
+    function escapeHtml(value='') {
+      return String(value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+    }
+    async function loadRequests() {
+      const { data, error } = await supabase.from('requests').select(`id,author,content,created_at,comments(id,author,content,created_at)`).order('created_at',{ascending:false});
+      if (error) {
+        console.error(error); setStatus('连接失败', false); return;
+      }
+      countBadge.textContent = `${(data||[]).length}条`;
+      if (!data || !data.length) {
+        requestList.innerHTML = '<div class="empty">还没有需求，快来发布第一个想法吧。</div>';
+        return;
+      }
+      requestList.innerHTML = data.map(request => {
+        const comments = (request.comments || []).sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+        const commentsHtml = comments.length
+          ? comments.map(comment => `
+            <div class="comment-item">
+              <div class="comment-top">
+                <span class="comment-user">${escapeHtml(comment.author)}</span>
+                <span class="comment-time">${formatTime(comment.created_at)}</span>
+              </div>
+              <p class="comment-text">${escapeHtml(comment.content)}</p>
+            </div>
+          `).join('')
+          : '<div class="empty" style="padding:12px;">暂无留言</div>';
+        return `
+          <article class="request-item">
+            <div class="request-header">
+              <span class="author">${escapeHtml(request.author)}</span>
+              <span class="time">${formatTime(request.created_at)}</span>
+            </div>
+            <div class="request-actions">
+              <button class="mini-btn" data-action="edit" data-id="${request.id}" data-content="${escapeHtml(request.content)}">编辑</button>
+              <button class="mini-btn delete" data-action="delete" data-id="${request.id}">删除</button>
+            </div>
+            <p class="content">${escapeHtml(request.content)}</p>
+            <div class="comment-box">
+              <div class="comment-list">${commentsHtml}</div>
+              <form class="comment-form" data-request-id="${request.id}">
+                <input type="text" name="commentAuthor" maxlength="20" placeholder="昵称" required />
+                <input type="text" name="commentContent" maxlength="200" placeholder="写下留言…" required />
+                <button class="comment-btn" type="submit">留言</button>
+              </form>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+    async function createRequest(author, content) {
+      const { error } = await supabase.from('requests').insert([{ author, content }]);
+      if (error) throw error;
+    }
+    async function updateRequest(id, content) {
+      const { error } = await supabase.from('requests').update({ content, updated_at: new Date().toISOString() }).eq('id', id);
+      if (error) throw error;
+    }
+    async function deleteRequest(id) {
+      const { error } = await supabase.from('requests').delete().eq('id', id);
+      if (error) throw error;
+    }
+    async function addComment(requestId, author, content) {
+      const { error } = await supabase.from('comments').insert([{ request_id: requestId, author, content }]);
+      if (error) throw error;
+    }
+    requestForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const author = authorInput.value.trim();
+      const content = contentInput.value.trim();
+      if (!author || !content) { alert('昵称和需求内容都不能为空'); return; }
+      try {
+        await createRequest(author, content);
+        requestForm.reset();
+        authorInput.value = author;
+        contentInput.focus();
+      } catch (error) {
+        console.error(error); alert('发布失败，请检查 Supabase 配置');
+      }
+    });
+    requestList.addEventListener('click', async function (e) {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      const action = btn.dataset.action; const id = btn.dataset.id;
+      if (action === 'delete') {
+        if (!confirm('确认删除这条需求吗？')) return;
+        try { await deleteRequest(id); } catch (error) { alert('删除失败'); }
+      }
+      if (action === 'edit') {
+        const current = btn.dataset.content || '';
+        const next = prompt('修改需求内容：', current);
+        if (next === null) return;
+        const trimmed = next.trim();
+        if (!trimmed) { alert('内容不能为空'); return; }
+        try { await updateRequest(id, trimmed); } catch (error) { alert('编辑失败'); }
+      }
+    });
+    requestList.addEventListener('submit', async function (e) {
+      const form = e.target;
+      if (!form.classList.contains('comment-form')) return;
+      e.preventDefault();
+      const requestId = form.dataset.requestId;
+      const author = form.commentAuthor.value.trim();
+      const content = form.commentContent.value.trim();
+      if (!author || !content) { alert('留言昵称和内容都不能为空'); return; }
+      try { await addComment(requestId, author, content); form.reset(); } catch (error) { console.error(error); alert('留言失败'); }
+    });
+    function setupRealtime() {
+      const channel = supabase.channel('requests-realtime')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'requests' }, () => loadRequests())
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'comments' }, () => loadRequests())
+        .subscribe((status) => {
+          if (status === 'SUBSCRIBED') setStatus('已连接', true);
+          else setStatus('连接失败', false);
+        });
+    }
+    loadRequests();
+    setupRealtime();
+  </script>
+</body>
+</html>
