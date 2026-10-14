@@ -1,0 +1,12 @@
+{
+  "name": "The Grace Box of the Chen Ye Family",
+  "short_name": "Grace Box",
+  "description": "收集陈叶一家日常里的恩典与光",
+  "lang": "zh-CN",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f4ed",
+  "theme_color": "#f7f4ed",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}
